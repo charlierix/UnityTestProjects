@@ -24,4 +24,8 @@ No aerodynamics, just a rigid body with simple drag
 
 Simple character controller, tried to emulate the flight from the game messiah
 
+- **Mesh IK**
 
+This was an attempt to have a mesh of nodes controlled by independent nodes.  This was likely copied/reworked from FastIK (I don't remember, it's something I did 2 years ago).  This was before I know about unity's IK
+
+https://www.youtube.com/watch?v=SHplmEc6iv0
