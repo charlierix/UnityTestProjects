@@ -1,3 +1,5 @@
+It looks like .gitignore needs to be at the root folder of each unity project - can't put it in this root folder
+
 Note that a lot of the projects have a lib folder with dlls from PerfectlyNormalUnity project
 
 https://github.com/charlierix/PerfectlyNormalUnity

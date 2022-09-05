@@ -1,1 +1,0 @@
-It looks like .gitignore needs to be at the root folder of each unity project - can't put it in this root folder

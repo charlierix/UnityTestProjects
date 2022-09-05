@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 1ca4f32b3f7ee5b488aa59d0aa02c8b9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - PlayerTransform: {instanceID: 0}
+  - GroundPrefab: {fileID: 3460429146097485027, guid: 8ce164ae7eaa289478628e12e0f987c3,
+      type: 3}
+  - BlockPrefab: {fileID: 3464790974698817549, guid: 6327deb8efe29854cb4f932c2c23c6f5,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
