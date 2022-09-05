@@ -1,0 +1,31 @@
+Make a version that looks in a mods folder for jetpack bundles
+
+Each bundle has settings for which modes to use and settings for those modes
+
+Make a scene that creates/edits/tests/saves those bundles
+
+-----------------
+
+
+the disc flight is pretty dialed in.  Some of the accelerations should be increased based on speed
+
+
+add a vrthruster that applies an antigravity when controller is near the center
+
+
+need a way to visualize all forces acting on the body.  This will help people design/tweak profiles
+
+
+recognize gestures
+	- a rapid stroke should do a burst acceleration
+	- both hands quickly straight back with wrists tilted down should be a strong thruster
+To train, press a button to review and isolate the
+last 6 six seconds of playtime.  Mark the action to train on and the desired response (from a list of actions)
+
+
+with the current settings, keep upright is both too weak and too intrusive depending what you want to do.  These thrust only
+actions need something to push against to get some bite, otherwise it's too drifty.  Keep upright is currently the only thing
+available to push against.  A tail fin would be a great thing to have
+
+
+
