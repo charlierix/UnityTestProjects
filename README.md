@@ -29,3 +29,19 @@ Simple character controller, tried to emulate the flight from the game messiah
 This was an attempt to have a mesh of nodes controlled by independent nodes.  This was likely copied/reworked from FastIK (I don't remember, it's something I did 2 years ago).  This was before I know about unity's IK
 
 https://www.youtube.com/watch?v=SHplmEc6iv0
+
+- **Rigging IK Custom Meshes**
+
+This was an atempt to build custom skeletons for bodies
+
+One of the scenes has various tests of different unity IK types
+
+The other scenes log controller positions to be analyzed later.  I was trying to figure out how to dynamically determine the direction that the skeleton should be pointing based on hands/head
+
+Logger is here
+
+https://github.com/charlierix/PerfectlyNormalUnity/tree/master/PerfectlyNormalUnity
+
+Log Viewer is here
+
+https://github.com/charlierix/PartyPeople/tree/master/Math_WPF/WPF/DebugLogViewer
