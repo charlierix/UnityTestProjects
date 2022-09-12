@@ -1274,12 +1274,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 1
   m_FollowOffset: {x: 0, y: 0, z: -10}
-  m_XDamping: 3.5
-  m_YDamping: 3.5
-  m_ZDamping: 3.5
+  m_XDamping: 1
+  m_YDamping: 1
+  m_ZDamping: 1
   m_AngularDampingMode: 0
   m_PitchDamping: 0
-  m_YawDamping: 3.5
+  m_YawDamping: 2
   m_RollDamping: 0
   m_AngularDamping: 0
 --- !u!114 &1381379838
@@ -1528,6 +1528,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LANDINGHEIGHT_MIN: 1
   LANDINGHEIGHT_MAX: 4
+  DOT_MIN: -0.92
+  DOT_MAX: 0.71
+  PERCENT_LANDING: 0.95
+  PERCENT_FLIGHT_MAX: 0.3
+  PERCENT_FLIGHT_MIN: 0.07
   RigidBodyObject: {fileID: 484778910}
   Altitude: {fileID: 942939095}
 --- !u!1 &1953153009
@@ -1682,7 +1687,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1988130692}
-  m_LocalRotation: {x: 0.00000001560446, y: 0.000000019551916, z: -3.0509709e-16, w: 1}
+  m_LocalRotation: {x: 0.00000001560446, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 3, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1782,7 +1787,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049048686}
-  m_LocalRotation: {x: 0.00000001560446, y: 0.000000019551916, z: -3.0509709e-16, w: 1}
+  m_LocalRotation: {x: 0.00000001560446, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 3, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

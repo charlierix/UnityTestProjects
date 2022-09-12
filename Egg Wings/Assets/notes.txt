@@ -1,0 +1,46 @@
+this tester is pure airplane
+
+the transision from walking to flight should be a cannon
+
+when crashed on the ground, go back to walking
+
+when in airplane mode, rotate the camera up
+
+the head's orientation will need to be treated like a tail - or canard
+
+----------------------------
+
+
+AeroSurfaceConfig
+	1:1 with an aero surface, holds all the props like size/lift/drag
+
+
+AeroSurface
+	class that represents a wing surface, gets tied to a gameobject transform
+
+
+AircraftPhysics
+	class that iterates over each aero surface every frame, hits rigid body with calculated forces
+
+
+----------------------------
+
+Don't directly expose config class for each aero surface.  Make an enum then have a factory that returns configs
+per enum (may also want to look at the size of the gameobject for chord and span)
+
+
+Probably don't need to do much with flaps, instead use IK to turn it into more of a soft body plane
+
+
+----------------------------
+
+
+when the arms are straight out, the wings should be long like a glider, also reduce the throttle
+
+
+when the arms are down at the sides, the wings should be smaller, also increase the throttle
+
+
+
+
+
