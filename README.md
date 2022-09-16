@@ -17,6 +17,10 @@ The player holds hands in a neutral position, activates flight.  Then the curren
 
 No aerodynamics, just a rigid body with simple drag
 
+- **Egg Wings**
+
+Explores winged flight
+
 
 ## Other Projects
 
