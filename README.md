@@ -45,3 +45,7 @@ https://github.com/charlierix/PerfectlyNormalUnity/tree/master/PerfectlyNormalUn
 Log Viewer is here
 
 https://github.com/charlierix/PartyPeople/tree/master/Math_WPF/WPF/DebugLogViewer
+
+- **PointGenerator**
+
+Console app that helps define chains.  Give it from, to, num steps, power.  It writes out locations of points, half points, distances
