@@ -1,5 +1,8 @@
 ﻿using System.Numerics;
 
+/// <summary>
+/// Helps make chains
+/// </summary>
 internal class Program
 {
     private static void Main(string[] args)
@@ -7,12 +10,12 @@ internal class Program
         Vector3 from = Vector3.Zero;
         Vector3 to = new Vector3(0, 0, -3);
 
-        int internal_points = 3;
-        float pow = 2;
+        int internal_points = 3;        // if 3, there will be: { from, int0, int1, int2, to }
+        float pow = 1;      // allows the points to be placed non linear
 
         Vector3[] points = GetPoints(from, to, internal_points, pow);
 
-        Console.WriteLine("unscaled points");
+        Console.WriteLine("points");
 
         for (int i = 0; i < points.Length; i++)
         {
@@ -29,12 +32,12 @@ internal class Program
         }
 
         Console.WriteLine();
-        Console.WriteLine("distances");
+        Console.WriteLine("distance | half distance");
 
         for (int i = 0; i < points.Length - 1; i++)
         {
             float distance = (points[i + 1] - points[i]).Length();
-            Console.WriteLine(FormatScalar(distance));
+            Console.WriteLine($"{FormatScalar(distance)}\t{FormatScalar(distance / 2f)}");
         }
     }
 
