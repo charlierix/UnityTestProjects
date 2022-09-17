@@ -10,12 +10,12 @@ internal class Program
         Vector3 from = Vector3.Zero;
         Vector3 to = new Vector3(0, 0, -3);
 
-        int internal_points = 3;        // if 3, there will be: { from, int0, int1, int2, to }
-        float pow = 1;      // allows the points to be placed non linear
+        int internal_points = 4;        // if 3, there will be: { from, int0, int1, int2, to }
+        float pow = 0.7f;      // allows the points to be placed non linear
 
         Vector3[] points = GetPoints(from, to, internal_points, pow);
 
-        Console.WriteLine("points");
+        Console.WriteLine("points (global)");
 
         for (int i = 0; i < points.Length; i++)
         {
@@ -23,11 +23,29 @@ internal class Program
         }
 
         Console.WriteLine();
-        Console.WriteLine("half points");
+        Console.WriteLine("half points (global)");
 
         for (int i = 0; i < points.Length - 1; i++)
         {
             Vector3 half_point = points[i] + ((points[i + 1] - points[i]) / 2);
+            Console.WriteLine(FormatPoint(half_point));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("points (relative)");
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            Vector3 rel_point = points[i + 1] - points[i];
+            Console.WriteLine(FormatPoint(rel_point));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("half points (relative)");
+
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            Vector3 half_point = (points[i + 1] - points[i]) / 2;
             Console.WriteLine(FormatPoint(half_point));
         }
 
