@@ -8,10 +8,10 @@ internal class Program
     private static void Main(string[] args)
     {
         Vector3 from = Vector3.Zero;
-        Vector3 to = new Vector3(0, 0, -3);
+        Vector3 to = new Vector3(0, 0, -2);
 
         int internal_points = 4;        // if 3, there will be: { from, int0, int1, int2, to }
-        float pow = 0.7f;      // allows the points to be placed non linear
+        float pow = 0.9f;      // allows the points to be placed non linear
 
         Vector3[] points = GetPoints(from, to, internal_points, pow);
 

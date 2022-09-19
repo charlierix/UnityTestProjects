@@ -1,0 +1,186 @@
+{
+    "name": "InputXBoxController",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "2c35806c-c305-4602-ac82-0b6afff9cc9b",
+            "actions": [
+                {
+                    "name": "Button A",
+                    "type": "Button",
+                    "id": "1cc97e17-a0f6-41c7-97a6-3e76785f1f1b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button B",
+                    "type": "Button",
+                    "id": "c9c7b59d-d0e2-470c-a614-b773236321e5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button Y",
+                    "type": "Button",
+                    "id": "aab5e639-fc37-4fa9-bc7d-74f1d1c784f0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Button X",
+                    "type": "Button",
+                    "id": "28a9d2f8-9a10-4a4d-9c7c-045678e5a94b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Thumbstick Left",
+                    "type": "PassThrough",
+                    "id": "5a1ecdaf-48c1-421c-96d2-782f987a4ca5",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Thumbstick Right",
+                    "type": "PassThrough",
+                    "id": "add81ac7-ad1d-4b87-9782-4ad7a2811a3e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger Left",
+                    "type": "PassThrough",
+                    "id": "925fbb91-f0c2-4b23-8e37-bbd8dca23b4e",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger Right",
+                    "type": "PassThrough",
+                    "id": "e5b43130-ab2b-441d-bee5-3c8ecddbac14",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "733af87d-9d80-4e7a-8731-25e4dd7c72dd",
+                    "path": "<XInputController>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Thumbstick Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "edf837e8-3d1e-47b6-9c15-d5fe781dda93",
+                    "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Button A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7985bdb-d69e-494b-98e7-7904ea3efba0",
+                    "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Button B",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "929e57e2-6851-4c39-9c1f-73a26dec3298",
+                    "path": "<XInputController>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Button Y",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c927411-653d-4b9d-89bb-a2404a75e7fe",
+                    "path": "<XInputController>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Button X",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f5a1a21b-aa07-4745-8d47-adbac87749c7",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Thumbstick Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "efd86e90-634a-4b60-822a-700405f6795c",
+                    "path": "<XInputController>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Trigger Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "68d2e451-1208-4846-9975-78e05141c6af",
+                    "path": "<XInputController>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "XBox Control Scheme",
+                    "action": "Trigger Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "XBox Control Scheme",
+            "bindingGroup": "XBox Control Scheme",
+            "devices": [
+                {
+                    "devicePath": "<XInputController>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
