@@ -18,7 +18,9 @@ using UnityEngine;
 /// </remarks>
 public class AeroSurface : MonoBehaviour
 {
-    public bool ShowDebugLines = false;
+    public bool ShowDebugLines_Structure = false;
+    public bool ShowDebugLines_Physics = false;
+    public bool ShowDebugLines_Velocity = false;
     private AeroDebugLines _debug = null;
 
     /// <summary>
@@ -55,8 +57,13 @@ public class AeroSurface : MonoBehaviour
         _lift_by_angle = AeroCurveBuilder.GetLiftByPercent(LiftScale);
         _drag_by_angle = AeroCurveBuilder.GetDragByPercent(LiftScale);
 
-        if (ShowDebugLines)
+        if (ShowDebugLines_Structure || ShowDebugLines_Physics || ShowDebugLines_Velocity)
+        {
             _debug = gameObject.AddComponent<AeroDebugLines>();
+            _debug.Show_Structure = ShowDebugLines_Structure;       //NOTE: the debug component's start doesn't fire until this start has finished, so it's safe to set these properties here
+            _debug.Show_Physics = ShowDebugLines_Physics;
+            _debug.Show_Velocity = ShowDebugLines_Velocity;
+        }
     }
 
     private void FixedUpdate()
@@ -88,9 +95,17 @@ public class AeroSurface : MonoBehaviour
 
         if (_debug != null)
         {
-            //_debug.Force_Deflect = force_deflection;
-            _debug.Force_Lift = force_lift;
-            _debug.Force_Drag = force_drag;
+            if (_debug.Show_Physics)
+            {
+                //_debug.Force_Deflect = force_deflection;
+                _debug.Force_Lift = force_lift;
+                _debug.Force_Drag = force_drag;
+            }
+
+            if(_debug.Show_Velocity)
+            {
+                _debug.Air_Velocity = air_vel_world;
+            }
         }
 
         return force_lift + force_drag;
@@ -129,6 +144,11 @@ public class AeroSurface : MonoBehaviour
         return air_vel_world.normalized * force;
     }
 
+
+
+    //TODO: High speed with low momemnt of inertia causes jitter, because the angular velocity changes rapidly at the tips
+    //May want to smooth this over a small amount of time
+
     //NOTE: this is the opposite of velocity
     private Vector3 GetWorldAirVelocity(Vector3 force_at_pos)
     {
@@ -155,4 +175,6 @@ public class AeroSurface : MonoBehaviour
 
         return _wind - vel_unity;
     }
+
+
 }
