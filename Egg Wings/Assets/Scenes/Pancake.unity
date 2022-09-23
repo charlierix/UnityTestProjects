@@ -325,7 +325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -499,7 +499,7 @@ MonoBehaviour:
   MULT_TAIL_RUDDER: 80
   MULT_WING_ROOT_STRAFE: 30
   MULT_WING_TIP_STRAFE: 20
-  MULT_WING_TIP_ROLL: 60
+  MULT_WING_TIP_ROLL: 45
   RigidBody: {fileID: 971046001}
   Target_Wing_Left_Root: {fileID: 142988346}
   Target_Wing_Left_Tip: {fileID: 1906855698}
@@ -661,7 +661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -1117,7 +1117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -1209,7 +1209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &679609344
 Transform:
   m_ObjectHideFlags: 0
@@ -1525,7 +1525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -1921,7 +1921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -2202,7 +2202,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -2284,7 +2284,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -2593,7 +2593,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -2856,7 +2856,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -3048,7 +3048,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -3134,7 +3134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -3298,7 +3298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -3380,7 +3380,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -3462,7 +3462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -3959,7 +3959,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -4075,7 +4075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4046691811037903911, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
       propertyPath: ShowDebugLines_Velocity
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
@@ -4262,7 +4262,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2085820573
 Transform:
   m_ObjectHideFlags: 0

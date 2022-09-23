@@ -75,8 +75,11 @@ public class AeroSurface : MonoBehaviour
 
     public Vector3 CalculateForces()
     {
+        const float ANGULAR_VELOCITY_MULT = 0.4f;      // if full angular velocity is used, then jitter occurs at high speed with low moment of inertia planes
+
         Vector3 force_at_pos = transform.position - _body.worldCenterOfMass;        // needed for calculating wind based on angular velocity
-        Vector3 air_vel_world = GetWorldAirVelocity(force_at_pos);
+
+        Vector3 air_vel_world = GetWorldAirVelocity_Smoothed(force_at_pos, _body.angularVelocity * ANGULAR_VELOCITY_MULT);
 
         float area = transform.lossyScale.x * transform.lossyScale.z;
 
@@ -102,7 +105,7 @@ public class AeroSurface : MonoBehaviour
                 _debug.Force_Drag = force_drag;
             }
 
-            if(_debug.Show_Velocity)
+            if (_debug.Show_Velocity)
             {
                 _debug.Air_Velocity = air_vel_world;
             }
@@ -144,37 +147,14 @@ public class AeroSurface : MonoBehaviour
         return air_vel_world.normalized * force;
     }
 
-
-
-    //TODO: High speed with low momemnt of inertia causes jitter, because the angular velocity changes rapidly at the tips
-    //May want to smooth this over a small amount of time
-
     //NOTE: this is the opposite of velocity
-    private Vector3 GetWorldAirVelocity(Vector3 force_at_pos)
+    private Vector3 GetWorldAirVelocity_Smoothed(Vector3 force_at_pos, Vector3 angularVelocity)
     {
-        // built in (takes angular velocity into account)
-        Vector3 vel_unity = _body.GetPointVelocity(transform.position);
+        //Vector3 vel_final = _body.GetPointVelocity(transform.position);       // here is how to do it if there is no manual adjustment to angular velocity (or standard)
 
-        // manual calculation
-        //Vector3 vel_manual = _body.velocity - Vector3.Cross(_body.angularVelocity, force_at_pos);
+        Vector3 vel_rot = Vector3.Cross(angularVelocity, force_at_pos);
+        Vector3 vel_final = _body.velocity + vel_rot;
 
-        ////float epps = Mathf.Epsilon;
-        //float epps = 1f;      // it was getting to within 0.15 or so
-        //float diff_x = MathF.Abs(vel_manual.x - vel_unity.x);
-        //float diff_y = MathF.Abs(vel_manual.y - vel_unity.y);
-        //float diff_z = MathF.Abs(vel_manual.z - vel_unity.z);
-
-        //if (diff_x > epps)
-        //{ }
-
-        //if (diff_y > epps)
-        //{ }
-
-        //if (diff_z > epps)
-        //{ }
-
-        return _wind - vel_unity;
+        return _wind - vel_final;
     }
-
-
 }

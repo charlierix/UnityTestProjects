@@ -62,6 +62,7 @@ public class AeroDebugLines : MonoBehaviour
 
         if (Show_Velocity)
         {
+            //_air_velocity_full_ang_vel = _renderer.AddLine_Basic(Vector3.zero, Vector3.zero, LINE_THICKNESS, UtilityUnity.ColorFromHex("1B5C70"));
             _air_velocity = _renderer.AddLine_Basic(Vector3.zero, Vector3.zero, LINE_THICKNESS, UtilityUnity.ColorFromHex("3AC5F0"));
         }
     }
