@@ -86,7 +86,6 @@ internal class Program
             float percent = i * step;
 
             retVal[i] = from + ((float)Math.Pow(percent, pow) * gap);
-            //retVal[i] = from + (percent * gap);
         }
 
         return retVal;
