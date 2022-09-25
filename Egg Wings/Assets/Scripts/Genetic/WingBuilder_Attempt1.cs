@@ -2,40 +2,56 @@ using PerfectlyNormalUnity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 public class WingBuilder_Attempt1 : MonoBehaviour
 {
     private const string UNSCALED = "unscaled";
+    private const float MIN_VERTICALSTABILIZER_HEIGHT = 0.1f;
 
     public GameObject MountPoint;
     public GameObject Wing_Prefab;
 
+    public int Inner_Segment_Count = 2;
+
     public float Span = 1f;
+    public float Span_Power = 1f;       // all inputs to the power function are scaled from 0 to 1.  You generally want to set power between 0.5 and 1
 
     public float Chord_Base = 0.4f;
     public float Chord_Tip = 0.4f;
+    public float Chord_Power = 1f;
 
-    public float Power_Span = 1f;
-    public float Power_Chord = 1f;
+    public float Lift_Base = 0.7f;
+    public float Lift_Tip = 0.2f;
+    public float Lift_Power = 1f;
 
-    public int Inner_Segment_Count = 2;
+    public float VerticalStabilizer_Base = 0;       // NOTE: a vertical stabilizer won't be created for a segment if it's less than MIN_VERTICALSTABILIZER_HEIGHT
+    public float VerticalStabilizer_Tip = 0;
+    public float VerticalStabilizer_Power = 4;
 
     private BoneRenderer _boneRenderer;
+    private RigBuilder _rigBuilder;
+    private TwistChainConstraint[] _twist_constraints;
 
     private void Start()
     {
         _boneRenderer = MountPoint.GetComponent<BoneRenderer>();
+        _rigBuilder = MountPoint.GetComponent<RigBuilder>();
+        _twist_constraints = MountPoint.GetComponentsInChildren<TwistChainConstraint>();
     }
 
     public void RebuildWing()
     {
         Clear();
 
-        Vector3[] points_global = GetPoints(Vector3.zero, new Vector3(Span, 0, 0), Inner_Segment_Count, Power_Span);
+        Vector3[] points_global = GetPoints(Vector3.zero, new Vector3(Span, 0, 0), Inner_Segment_Count, Span_Power);
         Vector3[] points_relative = ConvertToRelative(points_global);
-        float[] chords = GetChords(Chord_Base, Chord_Tip, Power_Chord, points_global, Span);
+
+        float[] chords = GetValueAtEndpoint(Chord_Base, Chord_Tip, Chord_Power, points_global, Span);
+        float[] lifts = GetValueAtEndpoint(Lift_Base, Lift_Tip, Lift_Power, points_global, Span);
+        float[] vert_stabilizers = GetValueAtEndpoint(VerticalStabilizer_Base, VerticalStabilizer_Tip, VerticalStabilizer_Power, points_global, Span);
 
         // These are the anchor points of each wing segment.  They need to stay unscaled (driven home by the name)
         // These act as parents for each wing segment, and are manipulated by the IK animations
@@ -44,10 +60,11 @@ public class WingBuilder_Attempt1 : MonoBehaviour
         // Just for visualization, shows the chain that the IK animation manipulates
         PopulateBoneRenderTransforms(unscaled);
 
-        CreateWings(unscaled, chords);
+        CreateWings(unscaled, chords, lifts);
+        CreateVerticalStabilizers(unscaled, chords, vert_stabilizers);
 
-
-
+        // Wire up IK contraints
+        BindIKConstraints(unscaled, points_relative);
     }
 
     private void Clear()
@@ -95,18 +112,17 @@ public class WingBuilder_Attempt1 : MonoBehaviour
         }
     }
 
-    private GameObject[] CreateWings(GameObject[] unscaled, float[] chords)
+    private GameObject[] CreateWings(GameObject[] unscaled, float[] chords, float[] lifts)
     {
         var retVal = new GameObject[unscaled.Length - 1];        // there is one more unscaled at the end (located where the last wingtip ends)
 
         for (int i = 0; i < retVal.Length; i++)
         {
-            //Vector3 span = unscaled[i + 1].transform.localPosition - unscaled[i].transform.localPosition;
-            Vector3 span = unscaled[i + 1].transform.localPosition;     // no need to subtract, because the local position is already the vector from 0 to endpoint
-
-            Vector3 mid_point = span / 2;
-
             retVal[i] = Instantiate(Wing_Prefab, unscaled[i].transform);
+
+            // ------------ Position / Size ------------
+            Vector3 span = unscaled[i + 1].transform.localPosition;
+            Vector3 mid_point = span / 2;
 
             retVal[i].transform.localPosition = mid_point;
 
@@ -114,9 +130,60 @@ public class WingBuilder_Attempt1 : MonoBehaviour
                 span.magnitude,
                 retVal[i].transform.localScale.y,
                 (chords[i] + chords[i + 1]) / 2);
+
+            // ------------ Aero Specific ------------
+            var aero = retVal[i].GetComponent<AeroSurface>();
+
+            aero.LiftScale = (lifts[i] + lifts[i + 1]) / 2;
+
+            //aero.ShowDebugLines_Structure = true;
         }
 
         return retVal;
+    }
+
+    private GameObject[] CreateVerticalStabilizers(GameObject[] unscaled, float[] chords, float[] vert_stabilizers)
+    {
+        var retVal = new List<GameObject>();
+
+        for (int i = 0; i < unscaled.Length; i++)
+        {
+            if (vert_stabilizers[i] < MIN_VERTICALSTABILIZER_HEIGHT)
+                continue;
+
+            GameObject stabilizer = Instantiate(Wing_Prefab, unscaled[i].transform);
+            retVal.Add(stabilizer);
+
+            // ------------ Position / Size ------------
+
+            //stabilizer.transform.localPosition = Vector3.zero;     // it sits at the joint, not halfway between joints
+
+            stabilizer.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+            stabilizer.transform.localScale = new Vector3(
+                vert_stabilizers[i],
+                stabilizer.transform.localScale.y,
+                chords[i]);
+
+            // ------------ Aero Specific ------------
+
+            var aero = stabilizer.GetComponent<AeroSurface>();
+            //aero.LiftScale = 0;
+            aero.ShowDebugLines_Structure = true;
+        }
+
+        return retVal.ToArray();
+    }
+
+    private void BindIKConstraints(GameObject[] unscaled, Vector3[] points_relative)
+    {
+        foreach (var twist in _twist_constraints ?? new TwistChainConstraint[0])
+        {
+            twist.data.root = unscaled[0].transform;
+            twist.data.tip = unscaled[^1].transform;
+        }
+
+        _rigBuilder.Build();
     }
 
     private static Vector3[] GetPoints(Vector3 from, Vector3 to, int internal_points, float pow)
@@ -165,12 +232,12 @@ public class WingBuilder_Attempt1 : MonoBehaviour
         return retVal;
     }
 
-    private static float[] GetChords(float chord_base, float chord_tip, float power, Vector3[] points_global, float total_span)
+    private static float[] GetValueAtEndpoint(float val_base, float val_tip, float power, Vector3[] points_global, float total_span)
     {
         var retVal = new float[points_global.Length];
 
-        retVal[0] = chord_base;
-        retVal[^1] = chord_tip;
+        retVal[0] = val_base;
+        retVal[^1] = val_tip;
 
         for (int i = 1; i < retVal.Length - 1; i++)
         {
@@ -178,7 +245,7 @@ public class WingBuilder_Attempt1 : MonoBehaviour
 
             float mult = Mathf.Pow(percent, power);
 
-            retVal[i] = UtilityMath.GetScaledValue(chord_base, chord_tip, 0, 1, mult);
+            retVal[i] = UtilityMath.GetScaledValue(val_base, val_tip, 0, 1, mult);
         }
 
         return retVal;
