@@ -57,11 +57,11 @@ public class WingBuilder_Attempt1 : MonoBehaviour
         // These act as parents for each wing segment, and are manipulated by the IK animations
         GameObject[] unscaled = CreateUnscaled(points_relative);
 
-        // Just for visualization, shows the chain that the IK animation manipulates
-        PopulateBoneRenderTransforms(unscaled);
-
         CreateWings(unscaled, chords, lifts);
         CreateVerticalStabilizers(unscaled, chords, vert_stabilizers);
+
+        // Just for visualization, shows the chain that the IK animation manipulates
+        PopulateBoneRenderTransforms(unscaled);
 
         // Wire up IK contraints
         BindIKConstraints(unscaled, points_relative);
@@ -100,16 +100,6 @@ public class WingBuilder_Attempt1 : MonoBehaviour
         }
 
         return retVal;
-    }
-
-    private void PopulateBoneRenderTransforms(GameObject[] unscaled)
-    {
-        _boneRenderer.transforms = new Transform[unscaled.Length];
-
-        for (int i = 0; i < unscaled.Length; i++)
-        {
-            _boneRenderer.transforms[i] = unscaled[i].transform;
-        }
     }
 
     private GameObject[] CreateWings(GameObject[] unscaled, float[] chords, float[] lifts)
@@ -167,12 +157,22 @@ public class WingBuilder_Attempt1 : MonoBehaviour
 
             // ------------ Aero Specific ------------
 
-            var aero = stabilizer.GetComponent<AeroSurface>();
+            //var aero = stabilizer.GetComponent<AeroSurface>();
             //aero.LiftScale = 0;
-            aero.ShowDebugLines_Structure = true;
+            //aero.ShowDebugLines_Structure = true;
         }
 
         return retVal.ToArray();
+    }
+
+    private void PopulateBoneRenderTransforms(GameObject[] unscaled)
+    {
+        _boneRenderer.transforms = new Transform[unscaled.Length];
+
+        for (int i = 0; i < unscaled.Length; i++)
+        {
+            _boneRenderer.transforms[i] = unscaled[i].transform;
+        }
     }
 
     private void BindIKConstraints(GameObject[] unscaled, Vector3[] points_relative)
@@ -255,11 +255,6 @@ public class WingBuilder_Attempt1 : MonoBehaviour
     {
         // -------------------- Future Ideas --------------------
 
-        // vertical stabalizers
-        //  allow them to be tied to rudder control
-
-        // lift pow
-        //  power curve of the lift of each wing segment
 
         // start/stop angles
 
