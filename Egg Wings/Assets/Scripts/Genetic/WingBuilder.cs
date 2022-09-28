@@ -13,17 +13,17 @@ namespace Assets.Scripts.Genetic
     {
         private const string UNSCALED = "unscaled";
 
-        public static (GameObject[] unscaled, GameObject[] wings_horz, GameObject[] wings_vert) BuildWing(WingDefinition def, GameObject mount_point, GameObject wing_prefab, bool is_right)
+        public static WingBuilderResults_Wing BuildWing(WingDefinition def, GameObject mount_point, GameObject wing_prefab, bool is_right)
         {
             // Calculate all the positions
-            var endpoints = GetEndpoints(def.Span, is_right);
+            var endpoints = WingBuilder_Calculations.GetEndpoints_Wing(def.Span, is_right);
 
-            Vector3[] points_global = GetPoints(endpoints.from, endpoints.to, def.Inner_Segment_Count, def.Span_Power);
-            Vector3[] points_relative = ConvertToRelative(points_global);
+            Vector3[] points_global = WingBuilder_Calculations.GetPoints(endpoints.from, endpoints.to, def.Inner_Segment_Count, def.Span_Power);
+            Vector3[] points_relative = WingBuilder_Calculations.ConvertToRelative(points_global);
 
-            float[] chords = GetValueAtEndpoint(def.Chord_Base, def.Chord_Tip, def.Chord_Power, points_global, def.Span);
-            float[] lifts = GetValueAtEndpoint(def.Lift_Base, def.Lift_Tip, def.Lift_Power, points_global, def.Span);
-            float[] vert_stabilizers = GetValueAtEndpoint(def.VerticalStabilizer_Base, def.VerticalStabilizer_Tip, def.VerticalStabilizer_Power, points_global, def.Span);
+            float[] chords = WingBuilder_Calculations.GetValueAtEndpoint_Power(def.Chord_Base, def.Chord_Tip, def.Chord_Power, points_global, def.Span);
+            float[] lifts = WingBuilder_Calculations.GetValueAtEndpoint_Power(def.Lift_Base, def.Lift_Tip, def.Lift_Power, points_global, def.Span);
+            float[] vert_stabilizers = WingBuilder_Calculations.GetValueAtEndpoint_Power(def.VerticalStabilizer_Base, def.VerticalStabilizer_Tip, def.VerticalStabilizer_Power, points_global, def.Span);
 
             // Extract some components out of the game objects
             BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
@@ -47,10 +47,60 @@ namespace Assets.Scripts.Genetic
             // Wire up IK contraints
             BindIKConstraints(rigBuilder, twist_constraints, unscaled, points_relative);
 
-            return (unscaled, wings_horz, wings_vert);
+            return new WingBuilderResults_Wing()
+            {
+                Unscaled = unscaled,
+                Wings_Horz = wings_horz,
+                Wings_Vert = wings_vert,
+            };
         }
 
-        // ------------------------------- Add / Remove -------------------------------
+        public static WingBuilderResults_Tail BuildTail_BOOMONLY(TailDefinition definition, GameObject mount_point, GameObject wing_prefab)
+        {
+            var defB = definition.Boom;
+            var defT = definition.Tail;
+
+            var tail_usage = WingBuilder_Calculations.GetTailUsage(defT.Chord, defT.Horz_Span, defT.Vert_Height, defT.MIN_SIZE);
+
+            // Calculate all the positions
+            var endpoints = WingBuilder_Calculations.GetEndpoints_Tail(defB.Length, tail_usage.horz || tail_usage.vert, defT.Chord);
+
+            Vector3[] points_boom_global = WingBuilder_Calculations.GetPoints(endpoints.boom_from, endpoints.boom_to, defB.Inner_Segment_Count, defB.Length_Power);
+            Vector3[] points_boom_relative = WingBuilder_Calculations.ConvertToRelative(points_boom_global);
+
+            float[] spans_boom = WingBuilder_Calculations.GetValueAtEndpoint_Bezier(defB.Span_Base, defB.Span_Mid, defB.Span_Tip, defB.Mid_Length, defB.Length, points_boom_global, defB.Bezier_PinchPercent);
+            // verts_boom = 
+
+            // Extract some components out of the game objects
+            BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
+            RigBuilder rigBuilder = mount_point.GetComponent<RigBuilder>();
+            TwistChainConstraint[] twist_constraints = mount_point.GetComponentsInChildren<TwistChainConstraint>();
+
+            // Remove existing wing from the mount point
+            Clear(mount_point, boneRenderer, rigBuilder, twist_constraints);
+
+
+            //TODO: if there is a tail, pass that in.  Then create a subset array of just the boom points (some functions need full, some need boom)
+
+            // These are the anchor points of each wing segment.  They need to stay unscaled (driven home by the name)
+            // These act as parents for each wing segment, and are manipulated by the IK animations
+            GameObject[] unscaled = CreateUnscaled(mount_point, points_boom_relative);
+
+            // Make the actual aero surfaces (the objects that get called in fixed update and apply forces to rigid body)
+            GameObject[] wings_boom_horz = CreateBoom_Horz(wing_prefab, unscaled, spans_boom);
+
+            // Just for visualization, shows the chain that the IK animation manipulates
+            PopulateBoneRenderTransforms(boneRenderer, unscaled);
+
+            // Wire up IK contraints
+            BindIKConstraints(rigBuilder, twist_constraints, unscaled, points_boom_relative);
+
+            return new WingBuilderResults_Tail()
+            {
+                Unscaled = unscaled,
+                Wings_Boom_Horz = wings_boom_horz,
+            };
+        }
 
         private static void Clear(GameObject mount_point, BoneRenderer boneRenderer, RigBuilder rigBuilder, TwistChainConstraint[] twist_constraints)
         {
@@ -96,6 +146,29 @@ namespace Assets.Scripts.Genetic
             return retVal;
         }
 
+        private static void PopulateBoneRenderTransforms(BoneRenderer boneRenderer, GameObject[] unscaled)
+        {
+            boneRenderer.transforms = new Transform[unscaled.Length];
+
+            for (int i = 0; i < unscaled.Length; i++)
+            {
+                boneRenderer.transforms[i] = unscaled[i].transform;
+            }
+        }
+
+        private static void BindIKConstraints(RigBuilder rigBuilder, TwistChainConstraint[] twist_constraints, GameObject[] unscaled, Vector3[] points_relative)
+        {
+            foreach (var twist in twist_constraints ?? new TwistChainConstraint[0])
+            {
+                twist.data.root = unscaled[0].transform;
+                twist.data.tip = unscaled[^1].transform;
+            }
+
+            rigBuilder.Build();
+        }
+
+        // ----------------------------------- Wing -----------------------------------
+
         private static GameObject[] CreateWings(GameObject wing_prefab, GameObject[] unscaled, float[] chords, float[] lifts)
         {
             var retVal = new GameObject[unscaled.Length - 1];        // there is one more unscaled at the end (located where the last wingtip ends)
@@ -105,6 +178,7 @@ namespace Assets.Scripts.Genetic
                 retVal[i] = UnityEngine.Object.Instantiate(wing_prefab, unscaled[i].transform);
 
                 // ------------ Position / Size ------------
+
                 Vector3 span = unscaled[i + 1].transform.localPosition;
                 Vector3 mid_point = span / 2;
 
@@ -116,6 +190,7 @@ namespace Assets.Scripts.Genetic
                     (chords[i] + chords[i + 1]) / 2);
 
                 // ------------ Aero Specific ------------
+
                 var aero = retVal[i].GetComponent<AeroSurface>();
 
                 aero.LiftScale = (lifts[i] + lifts[i + 1]) / 2;
@@ -159,101 +234,55 @@ namespace Assets.Scripts.Genetic
             return retVal.ToArray();
         }
 
-        private static void PopulateBoneRenderTransforms(BoneRenderer boneRenderer, GameObject[] unscaled)
+        // ----------------------------------- Tail -----------------------------------
+
+        private static GameObject[] CreateBoom_Horz(GameObject wing_prefab, GameObject[] unscaled, float[] spans)
         {
-            boneRenderer.transforms = new Transform[unscaled.Length];
-
-            for (int i = 0; i < unscaled.Length; i++)
-            {
-                boneRenderer.transforms[i] = unscaled[i].transform;
-            }
-        }
-
-        private static void BindIKConstraints(RigBuilder rigBuilder, TwistChainConstraint[] twist_constraints, GameObject[] unscaled, Vector3[] points_relative)
-        {
-            foreach (var twist in twist_constraints ?? new TwistChainConstraint[0])
-            {
-                twist.data.root = unscaled[0].transform;
-                twist.data.tip = unscaled[^1].transform;
-            }
-
-            rigBuilder.Build();
-        }
-
-        // ------------------------------- Calculations -------------------------------
-
-        private static (Vector3 from, Vector3 to) GetEndpoints(float span, bool is_right)
-        {
-            float to_x = is_right ?
-                span :
-                -span;
-
-            return (Vector3.zero, new Vector3(to_x, 0, 0));
-        }
-
-        private static Vector3[] GetPoints(Vector3 from, Vector3 to, int internal_points, float pow)
-        {
-            float[] x = GetPoints(from.x, to.x, internal_points, pow);
-            float[] y = GetPoints(from.y, to.y, internal_points, pow);
-            float[] z = GetPoints(from.z, to.z, internal_points, pow);
-
-            Vector3[] retVal = new Vector3[x.Length];
-
-            for (int i = 0; i < x.Length; i++)
-            {
-                retVal[i] = new Vector3(x[i], y[i], z[i]);
-            }
-
-            return retVal;
-        }
-        private static float[] GetPoints(float from, float to, int internal_points, float pow)
-        {
-            float[] retVal = new float[internal_points + 2];
-
-            float step = 1f / (retVal.Length - 1);
-            float gap = to - from;
+            var retVal = new GameObject[unscaled.Length - 1];        // there is one more unscaled at the end
 
             for (int i = 0; i < retVal.Length; i++)
             {
-                float percent = i * step;
+                retVal[i] = UnityEngine.Object.Instantiate(wing_prefab, unscaled[i].transform);
 
-                retVal[i] = from + (Mathf.Pow(percent, pow) * gap);
+                // ------------ Position / Size ------------
+
+                Vector3 chord = unscaled[i + 1].transform.localPosition;
+                Vector3 mid_point = chord / 2;
+
+                retVal[i].transform.localPosition = mid_point;
+
+                retVal[i].transform.localScale = new Vector3(
+                    (spans[i] + spans[i + 1]) / 2,
+                    retVal[i].transform.localScale.y,
+                    chord.magnitude);
+
+                // ------------ Aero Specific ------------
+
+                //var aero = stabilizer.GetComponent<AeroSurface>();
+                //aero.LiftScale = 0;       // already zero
+                //aero.ShowDebugLines_Structure = true;
             }
 
             return retVal;
         }
 
-        private static Vector3[] ConvertToRelative(Vector3[] points_global)
-        {
-            var retVal = new Vector3[points_global.Length];
+    }
 
-            retVal[0] = Vector3.zero;
+    public class WingBuilderResults_Wing
+    {
+        public GameObject[] Unscaled { get; set; }
+        public GameObject[] Wings_Horz { get; set; }
+        public GameObject[] Wings_Vert { get; set; }
+    }
+    public class WingBuilderResults_Tail
+    {
+        public GameObject[] Unscaled { get; set; }
 
-            for (int i = 0; i < points_global.Length - 1; i++)
-            {
-                retVal[i + 1] = points_global[i + 1] - points_global[i];
-            }
+        public GameObject[] Wings_Boom_Horz { get; set; }
+        public GameObject[] Wings_Boom_Vert { get; set; }
 
-            return retVal;
-        }
-
-        private static float[] GetValueAtEndpoint(float val_base, float val_tip, float power, Vector3[] points_global, float total_span)
-        {
-            var retVal = new float[points_global.Length];
-
-            retVal[0] = val_base;
-            retVal[^1] = val_tip;
-
-            for (int i = 1; i < retVal.Length - 1; i++)
-            {
-                float percent = (points_global[i] - points_global[0]).magnitude / total_span;
-
-                float mult = Mathf.Pow(percent, power);
-
-                retVal[i] = UtilityMath.GetScaledValue(val_base, val_tip, 0, 1, mult);
-            }
-
-            return retVal;
-        }
+        // Either of these two could be null
+        public GameObject Wing_Tail_Horz { get; set; }
+        public GameObject Wing_Tail_Vert { get; set; }
     }
 }
