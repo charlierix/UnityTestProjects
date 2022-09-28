@@ -35,7 +35,7 @@ public class TailBuilder_Attempt1 : MonoBehaviour
     {
         TailDefinition def = GetDefinition();
 
-        WingBuilder.BuildTail_BOOMONLY(def, MountPoint, Wing_Prefab);
+        WingBuilder.BuildTail(def, MountPoint, Wing_Prefab);
     }
 
     private TailDefinition GetDefinition()

@@ -55,7 +55,7 @@ namespace Assets.Scripts.Genetic
             };
         }
 
-        public static WingBuilderResults_Tail BuildTail_BOOMONLY(TailDefinition definition, GameObject mount_point, GameObject wing_prefab)
+        public static WingBuilderResults_Tail BuildTail(TailDefinition definition, GameObject mount_point, GameObject wing_prefab)
         {
             var defB = definition.Boom;
             var defT = definition.Tail;
@@ -68,8 +68,16 @@ namespace Assets.Scripts.Genetic
             Vector3[] points_boom_global = WingBuilder_Calculations.GetPoints(endpoints.boom_from, endpoints.boom_to, defB.Inner_Segment_Count, defB.Length_Power);
             Vector3[] points_boom_relative = WingBuilder_Calculations.ConvertToRelative(points_boom_global);
 
+            Vector3[] points_all_global = points_boom_global;
+            Vector3[] points_all_relative = points_boom_relative;
+            if (tail_usage.horz || tail_usage.vert)
+            {
+                points_all_global = UtilityCore.ArrayAdd(points_all_global, endpoints.tail_to.Value);
+                points_all_relative = WingBuilder_Calculations.ConvertToRelative(points_all_global);
+            }
+
             float[] spans_boom = WingBuilder_Calculations.GetValueAtEndpoint_Bezier(defB.Span_Base, defB.Span_Mid, defB.Span_Tip, defB.Mid_Length, defB.Length, points_boom_global, defB.Bezier_PinchPercent);
-            // verts_boom = 
+            float[] verts_boom = WingBuilder_Calculations.GetValueAtEndpoint_Bezier(defB.Vert_Base, defB.Vert_Mid, defB.Vert_Tip, defB.Mid_Length, defB.Length, points_boom_global, defB.Bezier_PinchPercent);
 
             // Extract some components out of the game objects
             BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
@@ -79,28 +87,42 @@ namespace Assets.Scripts.Genetic
             // Remove existing wing from the mount point
             Clear(mount_point, boneRenderer, rigBuilder, twist_constraints);
 
-
-            //TODO: if there is a tail, pass that in.  Then create a subset array of just the boom points (some functions need full, some need boom)
-
             // These are the anchor points of each wing segment.  They need to stay unscaled (driven home by the name)
             // These act as parents for each wing segment, and are manipulated by the IK animations
-            GameObject[] unscaled = CreateUnscaled(mount_point, points_boom_relative);
+            GameObject[] unscaled_all = CreateUnscaled(mount_point, points_all_relative);
+            GameObject[] unscaled_boom = unscaled_all;
+            if (tail_usage.horz || tail_usage.vert)
+            {
+                unscaled_boom = unscaled_all.
+                    SkipLast(1).
+                    ToArray();
+            }
 
             // Make the actual aero surfaces (the objects that get called in fixed update and apply forces to rigid body)
-            GameObject[] wings_boom_horz = CreateBoom_Horz(wing_prefab, unscaled, spans_boom);
+            GameObject[] wings_boom_horz = CreateBoom_Horz(wing_prefab, unscaled_boom, spans_boom);
+            GameObject[] wings_boom_vert = CreateBoom_Vert(wing_prefab, unscaled_boom, verts_boom);
+
+            var wings_tail = CreateWings_Tail(wing_prefab, unscaled_all, tail_usage.horz, tail_usage.vert, defT.Horz_Span, defT.Vert_Height);
 
             // Just for visualization, shows the chain that the IK animation manipulates
-            PopulateBoneRenderTransforms(boneRenderer, unscaled);
+            PopulateBoneRenderTransforms(boneRenderer, unscaled_all);
 
             // Wire up IK contraints
-            BindIKConstraints(rigBuilder, twist_constraints, unscaled, points_boom_relative);
+            BindIKConstraints(rigBuilder, twist_constraints, unscaled_all, points_all_relative);
 
             return new WingBuilderResults_Tail()
             {
-                Unscaled = unscaled,
+                Unscaled = unscaled_all,
+
                 Wings_Boom_Horz = wings_boom_horz,
+                Wings_Boom_Vert = wings_boom_vert,
+
+                Wing_Tail_Horz = wings_tail.horz,
+                Wing_Tail_Vert = wings_tail.vert,
             };
         }
+
+        // ---------------------------------- Common ----------------------------------
 
         private static void Clear(GameObject mount_point, BoneRenderer boneRenderer, RigBuilder rigBuilder, TwistChainConstraint[] twist_constraints)
         {
@@ -258,7 +280,7 @@ namespace Assets.Scripts.Genetic
 
                 // ------------ Aero Specific ------------
 
-                //var aero = stabilizer.GetComponent<AeroSurface>();
+                //var aero = retVal[i].GetComponent<AeroSurface>();
                 //aero.LiftScale = 0;       // already zero
                 //aero.ShowDebugLines_Structure = true;
             }
@@ -266,14 +288,108 @@ namespace Assets.Scripts.Genetic
             return retVal;
         }
 
+        private static GameObject[] CreateBoom_Vert(GameObject wing_prefab, GameObject[] unscaled, float[] verts)
+        {
+            var retVal = new GameObject[unscaled.Length - 1];        // there is one more unscaled at the end
+
+            for (int i = 0; i < retVal.Length; i++)
+            {
+                retVal[i] = UnityEngine.Object.Instantiate(wing_prefab, unscaled[i].transform);
+
+                // ------------ Position / Size ------------
+
+                Vector3 chord = unscaled[i + 1].transform.localPosition;
+                Vector3 mid_point = chord / 2;
+
+                retVal[i].transform.localPosition = mid_point;
+
+                retVal[i].transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+                retVal[i].transform.localScale = new Vector3(
+                    (verts[i] + verts[i + 1]) / 2,
+                    retVal[i].transform.localScale.y,
+                    chord.magnitude);
+
+                // ------------ Aero Specific ------------
+
+                //var aero = retVal[i].GetComponent<AeroSurface>();
+                //aero.LiftScale = 0;       // already zero
+                //aero.ShowDebugLines_Structure = true;
+            }
+
+            return retVal;
+        }
+
+        private static (GameObject horz, GameObject vert) CreateWings_Tail(GameObject wing_prefab, GameObject[] unscaled, bool has_horz, bool has_vert, float horz_span, float vert_height)
+        {
+            GameObject horz = null;
+            GameObject vert = null;
+
+            if (has_horz)
+            {
+                horz = UnityEngine.Object.Instantiate(wing_prefab, unscaled[^2].transform);
+
+                // ------------ Position / Size ------------
+
+                Vector3 chord = unscaled[^1].transform.localPosition;
+                Vector3 mid_point = chord / 2;
+
+                horz.transform.localPosition = mid_point;
+
+                horz.transform.localScale = new Vector3(
+                    horz_span,
+                    horz.transform.localScale.y,
+                    chord.magnitude);
+
+                // ------------ Aero Specific ------------
+
+                //var aero = horz.GetComponent<AeroSurface>();
+                //aero.LiftScale = 0;       // already zero
+                //aero.ShowDebugLines_Structure = true;
+            }
+
+            if (has_vert)
+            {
+                vert = UnityEngine.Object.Instantiate(wing_prefab, unscaled[^2].transform);
+
+                // ------------ Position / Size ------------
+
+                Vector3 chord = unscaled[^1].transform.localPosition;
+                Vector3 mid_point = chord / 2;
+
+                vert.transform.localPosition = mid_point;
+
+                vert.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+                vert.transform.localScale = new Vector3(
+                    vert_height,
+                    vert.transform.localScale.y,
+                    chord.magnitude);
+
+                // ------------ Aero Specific ------------
+
+                //var aero = vert.GetComponent<AeroSurface>();
+                //aero.LiftScale = 0;       // already zero
+                //aero.ShowDebugLines_Structure = true;
+            }
+
+            return (horz, vert);
+        }
     }
+
+    #region class: WingBuilderResults_Wing
 
     public class WingBuilderResults_Wing
     {
         public GameObject[] Unscaled { get; set; }
+
         public GameObject[] Wings_Horz { get; set; }
         public GameObject[] Wings_Vert { get; set; }
     }
+
+    #endregion
+    #region class: WingBuilderResults_Tail
+
     public class WingBuilderResults_Tail
     {
         public GameObject[] Unscaled { get; set; }
@@ -285,4 +401,6 @@ namespace Assets.Scripts.Genetic
         public GameObject Wing_Tail_Horz { get; set; }
         public GameObject Wing_Tail_Vert { get; set; }
     }
+
+    #endregion
 }
