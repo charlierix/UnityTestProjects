@@ -1,4 +1,5 @@
 using Assets.Scripts.Genetic;
+using Assets.Scripts.Genetic.Models;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class WingBuilder_Attempt2 : MonoBehaviour
     public GameObject MountPoint_Right;
 
     public GameObject Wing_Prefab;
+
+    public Vector3 Offset = new Vector3(0.25f, 0, 0);
+    public Quaternion Rotation = Quaternion.identity;
 
     public int Inner_Segment_Count = 2;
 
@@ -31,14 +35,17 @@ public class WingBuilder_Attempt2 : MonoBehaviour
     {
         WingDefinition def = GetDefinition();
 
-        WingBuilder.BuildWing(def, MountPoint_Left, Wing_Prefab, false);
-        WingBuilder.BuildWing(def, MountPoint_Right, Wing_Prefab, true);
+        PlaneBuilder.BuildWing(def, MountPoint_Left, Wing_Prefab, false);
+        PlaneBuilder.BuildWing(def, MountPoint_Right, Wing_Prefab, true);
     }
 
     private WingDefinition GetDefinition()
     {
         return new WingDefinition()
         {
+            Offset = Offset,
+            Rotation = Rotation,
+
             Inner_Segment_Count = Inner_Segment_Count,
 
             Span = Span,

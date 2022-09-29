@@ -1,4 +1,5 @@
 using Assets.Scripts.Genetic;
+using Assets.Scripts.Genetic.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ public class TailBuilder_Attempt1 : MonoBehaviour
     public GameObject MountPoint;
 
     public GameObject Wing_Prefab;
+
+    public Vector3 Offset = new Vector3(0, 0, 0);
+    public Quaternion Rotation = Quaternion.identity;
 
     public int Boom_Inner_Segment_Count = 2;
 
@@ -35,13 +39,16 @@ public class TailBuilder_Attempt1 : MonoBehaviour
     {
         TailDefinition def = GetDefinition();
 
-        WingBuilder.BuildTail(def, MountPoint, Wing_Prefab);
+        PlaneBuilder.BuildTail(def, MountPoint, Wing_Prefab);
     }
 
     private TailDefinition GetDefinition()
     {
         return new TailDefinition()
         {
+            Offset = Offset,
+            Rotation = Rotation,
+
             Boom = new TailDefinition_Boom()
             {
                 Inner_Segment_Count = Boom_Inner_Segment_Count,

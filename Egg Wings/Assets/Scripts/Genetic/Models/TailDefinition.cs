@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-namespace Assets.Scripts.Genetic
+namespace Assets.Scripts.Genetic.Models
 {
     public class TailDefinition
     {
+        public Vector3 Offset { get; set; }
+        public Quaternion Rotation { get; set; }
+
         public TailDefinition_Boom Boom = null;
         public TailDefinition_Tail Tail = null;
     }

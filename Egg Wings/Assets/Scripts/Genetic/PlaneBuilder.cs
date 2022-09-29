@@ -1,4 +1,5 @@
-﻿using PerfectlyNormalUnity;
+﻿using Assets.Scripts.Genetic.Models;
+using PerfectlyNormalUnity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,30 @@ using UnityEngine.Animations.Rigging;
 
 namespace Assets.Scripts.Genetic
 {
-    public static class WingBuilder
+    public static class PlaneBuilder
     {
         private const string UNSCALED = "unscaled";
 
-        public static WingBuilderResults_Wing BuildWing(WingDefinition def, GameObject mount_point, GameObject wing_prefab, bool is_right)
+        public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, GameObject mountpoint_left, GameObject mountpoint_right, GameObject mountpoint_tail, GameObject wing_prefab)
         {
+            return new PlaneBuilderResults_Plane()
+            {
+                Wing_Left = BuildWing(def.Wing, mountpoint_left, wing_prefab, false),
+                Wing_Right = BuildWing(def.Wing, mountpoint_right, wing_prefab, true),
+                Tail = BuildTail(def.Tail, mountpoint_tail, wing_prefab),
+            };
+        }
+
+        public static PlaneBuilderResults_Wing BuildWing(WingDefinition def, GameObject mount_point, GameObject wing_prefab, bool is_right)
+        {
+            mount_point.transform.localPosition = is_right ?
+                def.Offset :
+                new Vector3(-def.Offset.x, def.Offset.y, def.Offset.z);
+
+            mount_point.transform.localRotation = is_right ?
+                def.Rotation :
+                def.Rotation;
+
             // Calculate all the positions
             var endpoints = WingBuilder_Calculations.GetEndpoints_Wing(def.Span, is_right);
 
@@ -47,7 +66,7 @@ namespace Assets.Scripts.Genetic
             // Wire up IK contraints
             BindIKConstraints(rigBuilder, twist_constraints, unscaled, points_relative);
 
-            return new WingBuilderResults_Wing()
+            return new PlaneBuilderResults_Wing()
             {
                 Unscaled = unscaled,
                 Wings_Horz = wings_horz,
@@ -55,10 +74,13 @@ namespace Assets.Scripts.Genetic
             };
         }
 
-        public static WingBuilderResults_Tail BuildTail(TailDefinition definition, GameObject mount_point, GameObject wing_prefab)
+        public static PlaneBuilderResults_Tail BuildTail(TailDefinition def, GameObject mount_point, GameObject wing_prefab)
         {
-            var defB = definition.Boom;
-            var defT = definition.Tail;
+            mount_point.transform.localPosition = def.Offset;
+            mount_point.transform.localRotation = def.Rotation;
+
+            var defB = def.Boom;
+            var defT = def.Tail;
 
             var tail_usage = WingBuilder_Calculations.GetTailUsage(defT.Chord, defT.Horz_Span, defT.Vert_Height, defT.MIN_SIZE);
 
@@ -110,7 +132,7 @@ namespace Assets.Scripts.Genetic
             // Wire up IK contraints
             BindIKConstraints(rigBuilder, twist_constraints, unscaled_all, points_all_relative);
 
-            return new WingBuilderResults_Tail()
+            return new PlaneBuilderResults_Tail()
             {
                 Unscaled = unscaled_all,
 
@@ -377,9 +399,19 @@ namespace Assets.Scripts.Genetic
         }
     }
 
-    #region class: WingBuilderResults_Wing
+    #region class: PlaneBuilderResults_Plane
 
-    public class WingBuilderResults_Wing
+    public class PlaneBuilderResults_Plane
+    {
+        public PlaneBuilderResults_Wing Wing_Left { get; set; }
+        public PlaneBuilderResults_Wing Wing_Right { get; set; }
+        public PlaneBuilderResults_Tail Tail { get; set; }
+    }
+
+    #endregion
+    #region class: PlaneBuilderResults_Wing
+
+    public class PlaneBuilderResults_Wing
     {
         public GameObject[] Unscaled { get; set; }
 
@@ -388,9 +420,9 @@ namespace Assets.Scripts.Genetic
     }
 
     #endregion
-    #region class: WingBuilderResults_Tail
+    #region class: PlaneBuilderResults_Tail
 
-    public class WingBuilderResults_Tail
+    public class PlaneBuilderResults_Tail
     {
         public GameObject[] Unscaled { get; set; }
 
