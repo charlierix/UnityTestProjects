@@ -65,14 +65,21 @@ public class PlaneBuilder_Attempt1 : MonoBehaviour
     {
         PlaneDefinition def = GetDefinition();
 
-        PlaneBuilder.BuildPlane(def, MountPoint_Left, MountPoint_Right, MountPoint_Tail, Wing_Prefab);
+        var mountpoints = new PlaneBuilder_MountPoints()
+        {
+            Tail = MountPoint_Tail,
+            Wing_0_Left = MountPoint_Left,
+            Wing_0_Right = MountPoint_Right,
+        };
+
+        PlaneBuilder.BuildPlane(def, mountpoints, Wing_Prefab);
     }
 
     private PlaneDefinition GetDefinition()
     {
         return new PlaneDefinition()
         {
-            Wing = GetDefinition_Wing(),
+            Wing_0 = GetDefinition_Wing(),
             Tail = GetDefinition_Tail(),
         };
     }

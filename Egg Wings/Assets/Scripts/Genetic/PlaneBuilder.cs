@@ -14,13 +14,17 @@ namespace Assets.Scripts.Genetic
     {
         private const string UNSCALED = "unscaled";
 
-        public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, GameObject mountpoint_left, GameObject mountpoint_right, GameObject mountpoint_tail, GameObject wing_prefab)
+        public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, PlaneBuilder_MountPoints mountpoints, GameObject wing_prefab)
         {
+            //TODO:
+
+            //TODO: validate positions, move things around
+
             return new PlaneBuilderResults_Plane()
             {
-                Wing_Left = BuildWing(def.Wing, mountpoint_left, wing_prefab, false),
-                Wing_Right = BuildWing(def.Wing, mountpoint_right, wing_prefab, true),
-                Tail = BuildTail(def.Tail, mountpoint_tail, wing_prefab),
+                Wing_Left = BuildWing(def.Wing_0, mountpoints.Wing_0_Left, wing_prefab, false),
+                Wing_Right = BuildWing(def.Wing_0, mountpoints.Wing_0_Right, wing_prefab, true),
+                Tail = BuildTail(def.Tail, mountpoints.Tail, wing_prefab),
             };
         }
 
@@ -399,6 +403,23 @@ namespace Assets.Scripts.Genetic
         }
     }
 
+    #region class: PlaneBuilder_MountPoints
+
+    public class PlaneBuilder_MountPoints
+    {
+        public GameObject Wing_0_Left { get; set; }
+        public GameObject Wing_0_Right { get; set; }
+
+        public GameObject Wing_1_Left { get; set; }
+        public GameObject Wing_1_Right { get; set; }
+
+        public GameObject Wing_2_Left { get; set; }
+        public GameObject Wing_2_Right { get; set; }
+
+        public GameObject Tail { get; set; }
+    }
+
+    #endregion
     #region class: PlaneBuilderResults_Plane
 
     public class PlaneBuilderResults_Plane

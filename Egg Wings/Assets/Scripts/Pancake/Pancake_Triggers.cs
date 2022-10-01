@@ -1,24 +1,16 @@
-using PerfectlyNormalUnity;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class Pancake_Triggers : MonoBehaviour
 {
-    public float MULT_THRUST = 144;
-    public float MULT_BRAKE = 144;
-
     public GameObject RigidBodyObject;
     private Rigidbody _body = null;
 
-    //public GameObject InfoLabel;
-    //private TextMeshProUGUI _info_label;
+    public Engine Engine_Left;
+    public Engine Engine_Right;
 
     private InputXBoxController _input;
-
-    private float _left_trigger = 0f;
-    private float _right_trigger = 0f;
 
     private void Awake()
     {
@@ -28,7 +20,6 @@ public class Pancake_Triggers : MonoBehaviour
     void Start()
     {
         _body = RigidBodyObject.GetComponent<Rigidbody>();
-        //_info_label = InfoLabel.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     private void OnEnable()
@@ -42,18 +33,7 @@ public class Pancake_Triggers : MonoBehaviour
 
     void Update()
     {
-        _left_trigger = _input.Player.TriggerLeft.ReadValue<float>();
-        _right_trigger = _input.Player.TriggerRight.ReadValue<float>();
-
-        //_info_label.text = $"left: {_left_trigger.ToStringSignificantDigits(3)}\r\nright: {_right_trigger.ToStringSignificantDigits(3)}";
-    }
-
-    private void FixedUpdate()
-    {
-        if (!_left_trigger.IsNearZero())
-            _body.AddRelativeForce(Vector3.up * (-_left_trigger * MULT_BRAKE), ForceMode.Force);
-
-        if(!_right_trigger.IsNearZero())
-            _body.AddRelativeForce(Vector3.up * (_right_trigger * MULT_THRUST), ForceMode.Force);
+        Engine_Left.Fire_Percent = _input.Player.TriggerLeft.ReadValue<float>();        // this is zero to one
+        Engine_Right.Fire_Percent = _input.Player.TriggerRight.ReadValue<float>();
     }
 }
