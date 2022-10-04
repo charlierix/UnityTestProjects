@@ -7,10 +7,24 @@ using UnityEngine;
 
 public class PlaneBuilder_Attempt1 : MonoBehaviour
 {
-    public GameObject MountPoint_Engine_Left;
-    public GameObject MountPoint_Engine_Right;
-    public GameObject MountPoint_Wing_Left;
-    public GameObject MountPoint_Wing_Right;
+    public GameObject MountPoint_Engine_0_Left;
+    public GameObject MountPoint_Engine_0_Right;
+
+    public GameObject MountPoint_Engine_1_Left;
+    public GameObject MountPoint_Engine_1_Right;
+
+    public GameObject MountPoint_Engine_2_Left;
+    public GameObject MountPoint_Engine_2_Right;
+
+    public GameObject MountPoint_Wing_0_Left;
+    public GameObject MountPoint_Wing_0_Right;
+
+    public GameObject MountPoint_Wing_1_Left;
+    public GameObject MountPoint_Wing_1_Right;
+
+    public GameObject MountPoint_Wing_2_Left;
+    public GameObject MountPoint_Wing_2_Right;
+
     public GameObject MountPoint_Tail;
 
     public GameObject Engine_Prefab;
@@ -77,14 +91,28 @@ public class PlaneBuilder_Attempt1 : MonoBehaviour
 
         var mountpoints = new PlaneBuilder_MountPoints()
         {
-            Engine_0_Left = MountPoint_Engine_Left,
-            Engine_0_Right = MountPoint_Engine_Right,
+            Engine_0_Left = MountPoint_Engine_0_Left,
+            Engine_0_Right = MountPoint_Engine_0_Right,
+
+            Engine_1_Left = MountPoint_Engine_1_Left,
+            Engine_1_Right = MountPoint_Engine_1_Right,
+
+            Engine_2_Left = MountPoint_Engine_2_Left,
+            Engine_2_Right = MountPoint_Engine_2_Right,
+
+            Wing_0_Left = MountPoint_Wing_0_Left,
+            Wing_0_Right = MountPoint_Wing_0_Right,
+
+            Wing_1_Left = MountPoint_Wing_1_Left,
+            Wing_1_Right = MountPoint_Wing_1_Right,
+
+            Wing_2_Left = MountPoint_Wing_2_Left,
+            Wing_2_Right = MountPoint_Wing_2_Right,
+
             Tail = MountPoint_Tail,
-            Wing_0_Left = MountPoint_Wing_Left,
-            Wing_0_Right = MountPoint_Wing_Right,
         };
 
-        PlaneBuilder.BuildPlane(def, mountpoints, Engine_Prefab, Wing_Prefab);
+        var result = PlaneBuilder.BuildPlane(def, mountpoints, Engine_Prefab, Wing_Prefab);
     }
 
     private PlaneDefinition GetDefinition()

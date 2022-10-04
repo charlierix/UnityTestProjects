@@ -9,11 +9,23 @@ namespace Assets.Scripts.Genetic.Models
 {
     public record PlaneBuilderResults_Plane
     {
-        public PlaneBuilderResults_Engine Engine_Left { get; init; }
-        public PlaneBuilderResults_Engine Engine_Right { get; init; }
+        public PlaneBuilderResults_Engine Engine_0_Left { get; init; }
+        public PlaneBuilderResults_Engine Engine_0_Right { get; init; }
 
-        public PlaneBuilderResults_Wing Wing_Left { get; init; }
-        public PlaneBuilderResults_Wing Wing_Right { get; init; }
+        public PlaneBuilderResults_Engine Engine_1_Left { get; init; }
+        public PlaneBuilderResults_Engine Engine_1_Right { get; init; }
+
+        public PlaneBuilderResults_Engine Engine_2_Left { get; init; }
+        public PlaneBuilderResults_Engine Engine_2_Right { get; init; }
+
+        public PlaneBuilderResults_Wing Wing_0_Left { get; init; }
+        public PlaneBuilderResults_Wing Wing_0_Right { get; init; }
+
+        public PlaneBuilderResults_Wing Wing_1_Left { get; init; }
+        public PlaneBuilderResults_Wing Wing_1_Right { get; init; }
+
+        public PlaneBuilderResults_Wing Wing_2_Left { get; init; }
+        public PlaneBuilderResults_Wing Wing_2_Right { get; init; }
 
         public PlaneBuilderResults_Tail Tail { get; init; }
     }

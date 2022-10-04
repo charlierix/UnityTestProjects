@@ -27,11 +27,23 @@ namespace Assets.Scripts.Genetic
 
             return new PlaneBuilderResults_Plane()
             {
-                Engine_Left = BuildEngine(def.Engine_0, mountpoints.Engine_0_Left, engine_prefab, false),
-                Engine_Right = BuildEngine(def.Engine_0, mountpoints.Engine_0_Right, engine_prefab, true),
+                Engine_0_Left = BuildEngine(def.Engine_0, mountpoints.Engine_0_Left, engine_prefab, false),
+                Engine_0_Right = BuildEngine(def.Engine_0, mountpoints.Engine_0_Right, engine_prefab, true),
 
-                Wing_Left = BuildWing(def.Wing_0, mountpoints.Wing_0_Left, wing_prefab, false),
-                Wing_Right = BuildWing(def.Wing_0, mountpoints.Wing_0_Right, wing_prefab, true),
+                Engine_1_Left = BuildEngine(def.Engine_1, mountpoints.Engine_1_Left, engine_prefab, false),
+                Engine_1_Right = BuildEngine(def.Engine_1, mountpoints.Engine_1_Right, engine_prefab, true),
+
+                Engine_2_Left = BuildEngine(def.Engine_2, mountpoints.Engine_2_Left, engine_prefab, false),
+                Engine_2_Right = BuildEngine(def.Engine_2, mountpoints.Engine_2_Right, engine_prefab, true),
+
+                Wing_0_Left = BuildWing(def.Wing_0, mountpoints.Wing_0_Left, wing_prefab, false),
+                Wing_0_Right = BuildWing(def.Wing_0, mountpoints.Wing_0_Right, wing_prefab, true),
+
+                Wing_1_Left = BuildWing(def.Wing_1, mountpoints.Wing_1_Left, wing_prefab, false),
+                Wing_1_Right = BuildWing(def.Wing_1, mountpoints.Wing_1_Right, wing_prefab, true),
+
+                Wing_2_Left = BuildWing(def.Wing_2, mountpoints.Wing_2_Left, wing_prefab, false),
+                Wing_2_Right = BuildWing(def.Wing_2, mountpoints.Wing_2_Right, wing_prefab, true),
 
                 Tail = BuildTail(def.Tail, mountpoints.Tail, wing_prefab),
             };
@@ -39,6 +51,12 @@ namespace Assets.Scripts.Genetic
 
         public static PlaneBuilderResults_Engine BuildEngine(EngineDefinition def, GameObject mount_point, GameObject engine_prefab, bool is_right)
         {
+            if(def == null)
+            {
+                Clear(mount_point);
+                return null;
+            }
+
             SetLeftRightTransform(mount_point, def.Offset, def.Rotation, is_right);
 
             Clear(mount_point);
@@ -56,6 +74,17 @@ namespace Assets.Scripts.Genetic
 
         public static PlaneBuilderResults_Wing BuildWing(WingDefinition def, GameObject mount_point, GameObject wing_prefab, bool is_right)
         {
+            // Extract some components out of the game objects
+            BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
+            RigBuilder rigBuilder = mount_point.GetComponent<RigBuilder>();
+            TwistChainConstraint[] twist_constraints = mount_point.GetComponentsInChildren<TwistChainConstraint>();
+
+            if (def == null)
+            {
+                Clear(mount_point, boneRenderer, rigBuilder, twist_constraints);
+                return null;
+            }
+
             SetLeftRightTransform(mount_point, def.Offset, def.Rotation, is_right);
 
             // Calculate all the positions
@@ -67,11 +96,6 @@ namespace Assets.Scripts.Genetic
             float[] chords = WingBuilder_Calculations.GetValueAtEndpoint_Power(def.Chord_Base, def.Chord_Tip, def.Chord_Power, points_global, def.Span);
             float[] lifts = WingBuilder_Calculations.GetValueAtEndpoint_Power(def.Lift_Base, def.Lift_Tip, def.Lift_Power, points_global, def.Span);
             float[] vert_stabilizers = WingBuilder_Calculations.GetValueAtEndpoint_Power(def.VerticalStabilizer_Base, def.VerticalStabilizer_Tip, def.VerticalStabilizer_Power, points_global, def.Span);
-
-            // Extract some components out of the game objects
-            BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
-            RigBuilder rigBuilder = mount_point.GetComponent<RigBuilder>();
-            TwistChainConstraint[] twist_constraints = mount_point.GetComponentsInChildren<TwistChainConstraint>();
 
             // Remove existing wing from the mount point
             Clear(mount_point, boneRenderer, rigBuilder, twist_constraints);
@@ -100,6 +124,17 @@ namespace Assets.Scripts.Genetic
 
         public static PlaneBuilderResults_Tail BuildTail(TailDefinition def, GameObject mount_point, GameObject wing_prefab)
         {
+            // Extract some components out of the game objects
+            BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
+            RigBuilder rigBuilder = mount_point.GetComponent<RigBuilder>();
+            TwistChainConstraint[] twist_constraints = mount_point.GetComponentsInChildren<TwistChainConstraint>();
+
+            if (def == null)
+            {
+                Clear(mount_point, boneRenderer, rigBuilder, twist_constraints);
+                return null;
+            }
+
             mount_point.transform.localPosition = def.Offset;
             mount_point.transform.localRotation = def.Rotation;
 
@@ -124,11 +159,6 @@ namespace Assets.Scripts.Genetic
 
             float[] spans_boom = WingBuilder_Calculations.GetValueAtEndpoint_Bezier(defB.Span_Base, defB.Span_Mid, defB.Span_Tip, defB.Mid_Length, defB.Length, points_boom_global, defB.Bezier_PinchPercent);
             float[] verts_boom = WingBuilder_Calculations.GetValueAtEndpoint_Bezier(defB.Vert_Base, defB.Vert_Mid, defB.Vert_Tip, defB.Mid_Length, defB.Length, points_boom_global, defB.Bezier_PinchPercent);
-
-            // Extract some components out of the game objects
-            BoneRenderer boneRenderer = mount_point.GetComponent<BoneRenderer>();
-            RigBuilder rigBuilder = mount_point.GetComponent<RigBuilder>();
-            TwistChainConstraint[] twist_constraints = mount_point.GetComponentsInChildren<TwistChainConstraint>();
 
             // Remove existing wing from the mount point
             Clear(mount_point, boneRenderer, rigBuilder, twist_constraints);
