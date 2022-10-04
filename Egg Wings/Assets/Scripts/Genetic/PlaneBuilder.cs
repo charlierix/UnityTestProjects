@@ -14,7 +14,7 @@ namespace Assets.Scripts.Genetic
     {
         private const string UNSCALED = "unscaled";
 
-        public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, PlaneBuilder_MountPoints mountpoints, GameObject wing_prefab)
+        public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, PlaneBuilder_MountPoints mountpoints, GameObject engine_prefab, GameObject wing_prefab)
         {
             //TODO:
 
@@ -22,21 +22,36 @@ namespace Assets.Scripts.Genetic
 
             return new PlaneBuilderResults_Plane()
             {
+                Engine_Left = BuildEngine(def.Engine_0, mountpoints.Engine_0_Left, engine_prefab, false),
+                Engine_Right = BuildEngine(def.Engine_0, mountpoints.Engine_0_Right, engine_prefab, true),
+
                 Wing_Left = BuildWing(def.Wing_0, mountpoints.Wing_0_Left, wing_prefab, false),
                 Wing_Right = BuildWing(def.Wing_0, mountpoints.Wing_0_Right, wing_prefab, true),
+
                 Tail = BuildTail(def.Tail, mountpoints.Tail, wing_prefab),
+            };
+        }
+
+        public static PlaneBuilderResults_Engine BuildEngine(EngineDefinition def, GameObject mount_point, GameObject engine_prefab, bool is_right)
+        {
+            SetLeftRightTransform(mount_point, def.Offset, def.Rotation, is_right);
+
+            Clear(mount_point);
+
+            GameObject[] unscaled = CreateUnscaled(mount_point, new[] { Vector3.zero });
+
+            GameObject engine = CreateEngine(engine_prefab, unscaled[0], def.Size);
+
+            return new PlaneBuilderResults_Engine()
+            {
+                Unscaled = unscaled[0],
+                Engine = engine,
             };
         }
 
         public static PlaneBuilderResults_Wing BuildWing(WingDefinition def, GameObject mount_point, GameObject wing_prefab, bool is_right)
         {
-            mount_point.transform.localPosition = is_right ?
-                def.Offset :
-                new Vector3(-def.Offset.x, def.Offset.y, def.Offset.z);
-
-            mount_point.transform.localRotation = is_right ?
-                def.Rotation :
-                def.Rotation;
+            SetLeftRightTransform(mount_point, def.Offset, def.Rotation, is_right);
 
             // Calculate all the positions
             var endpoints = WingBuilder_Calculations.GetEndpoints_Wing(def.Span, is_right);
@@ -150,7 +165,7 @@ namespace Assets.Scripts.Genetic
 
         // ---------------------------------- Common ----------------------------------
 
-        private static void Clear(GameObject mount_point, BoneRenderer boneRenderer, RigBuilder rigBuilder, TwistChainConstraint[] twist_constraints)
+        private static void Clear(GameObject mount_point, BoneRenderer boneRenderer = null, RigBuilder rigBuilder = null, TwistChainConstraint[] twist_constraints = null)
         {
             // Clear uscaled (keep Rig)
             foreach (Transform child_transform in mount_point.transform)
@@ -162,16 +177,21 @@ namespace Assets.Scripts.Genetic
             }
 
             // Clear bone renderer's transforms
-            boneRenderer.transforms = new Transform[0];
+            if (boneRenderer != null)
+                boneRenderer.transforms = new Transform[0];
 
             // Clear IK constraints
-            foreach (var twist in twist_constraints ?? new TwistChainConstraint[0])
+            if (twist_constraints != null)
             {
-                twist.data.root = null;
-                twist.data.tip = null;
+                foreach (var twist in twist_constraints)
+                {
+                    twist.data.root = null;
+                    twist.data.tip = null;
+                }
             }
 
-            rigBuilder.Build();
+            if (rigBuilder != null)
+                rigBuilder.Build();
         }
 
         private static GameObject[] CreateUnscaled(GameObject mount_point, Vector3[] points_relative)
@@ -213,6 +233,31 @@ namespace Assets.Scripts.Genetic
             }
 
             rigBuilder.Build();
+        }
+
+        private static void SetLeftRightTransform(GameObject mount_point, Vector3 offset, Quaternion rotation, bool is_right)
+        {
+            mount_point.transform.localPosition = is_right ?
+                offset :
+                new Vector3(-offset.x, offset.y, offset.z);
+
+            mount_point.transform.localRotation = is_right ?
+                rotation :
+                Math3D.GetMirroredRotation(rotation, AxisDim.X);
+        }
+
+        // ---------------------------------- Engine ----------------------------------
+
+        private static GameObject CreateEngine(GameObject engine_prefab, GameObject unscaled, float size)
+        {
+            GameObject retVal = UnityEngine.Object.Instantiate(engine_prefab, unscaled.transform);
+
+            retVal.transform.localScale = new Vector3(
+                Engine.STANDARD_RADIUS * size,
+                Engine.STANDARD_HEIGHT * size,
+                Engine.STANDARD_RADIUS * size);
+
+            return retVal;
         }
 
         // ----------------------------------- Wing -----------------------------------
@@ -407,6 +452,15 @@ namespace Assets.Scripts.Genetic
 
     public class PlaneBuilder_MountPoints
     {
+        public GameObject Engine_0_Left { get; set; }
+        public GameObject Engine_0_Right { get; set; }
+
+        public GameObject Engine_1_Left { get; set; }
+        public GameObject Engine_1_Right { get; set; }
+
+        public GameObject Engine_2_Left { get; set; }
+        public GameObject Engine_2_Right { get; set; }
+
         public GameObject Wing_0_Left { get; set; }
         public GameObject Wing_0_Right { get; set; }
 
@@ -424,9 +478,21 @@ namespace Assets.Scripts.Genetic
 
     public class PlaneBuilderResults_Plane
     {
+        public PlaneBuilderResults_Engine Engine_Left { get; set; }
+        public PlaneBuilderResults_Engine Engine_Right { get; set; }
         public PlaneBuilderResults_Wing Wing_Left { get; set; }
         public PlaneBuilderResults_Wing Wing_Right { get; set; }
         public PlaneBuilderResults_Tail Tail { get; set; }
+    }
+
+    #endregion
+    #region class: PlaneBuilderResults_Engine
+
+    public class PlaneBuilderResults_Engine
+    {
+        public GameObject Unscaled { get; set; }
+
+        public GameObject Engine { get; set; }
     }
 
     #endregion

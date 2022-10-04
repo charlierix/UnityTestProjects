@@ -1194,6 +1194,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MountPoint: {fileID: 2095851920}
   Wing_Prefab: {fileID: 4046691811037903910, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
+  Offset: {x: 0, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
   Boom_Inner_Segment_Count: 6
   Boom_Length: 1.5
   Boom_Length_Power: 1
@@ -1468,6 +1470,8 @@ MonoBehaviour:
   MountPoint_Left: {fileID: 182345824}
   MountPoint_Right: {fileID: 9836312}
   Wing_Prefab: {fileID: 4046691811037903910, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
+  Offset: {x: 0.25, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0, w: 1}
   Inner_Segment_Count: 2
   Span: 1
   Span_Power: 1
@@ -1889,6 +1893,8 @@ Transform:
   m_LocalScale: {x: 1, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1367427558}
+  - {fileID: 1258014872}
   - {fileID: 1291868278}
   - {fileID: 1899406183}
   - {fileID: 1813383718}
@@ -3535,6 +3541,37 @@ MonoBehaviour:
   - {fileID: 198586614}
   - {fileID: 1029015461}
   - {fileID: 354512998}
+--- !u!1 &1258014871
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1258014872}
+  m_Layer: 0
+  m_Name: Engine Right
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1258014872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258014871}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.7, y: 0, z: 0.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 638192595}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1291868277
 GameObject:
   m_ObjectHideFlags: 0
@@ -3569,7 +3606,7 @@ Transform:
   - {fileID: 691555117}
   - {fileID: 1039150923}
   m_Father: {fileID: 638192595}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1291868279
 MonoBehaviour:
@@ -3690,6 +3727,37 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1367427557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1367427558}
+  m_Layer: 0
+  m_Name: Engine Left
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1367427558
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367427557}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.7, y: 0, z: 0.85}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 638192595}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1389723130
 GameObject:
   m_ObjectHideFlags: 0
@@ -4863,7 +4931,7 @@ Transform:
   - {fileID: 141899072}
   - {fileID: 1537396284}
   m_Father: {fileID: 638192595}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1839197062
 GameObject:
@@ -4940,12 +5008,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f08286fc2eac4340b44a02f1e51ecc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MountPoint_Left: {fileID: 1291868277}
-  MountPoint_Right: {fileID: 1899406182}
+  MountPoint_Engine_Left: {fileID: 1367427557}
+  MountPoint_Engine_Right: {fileID: 1258014871}
+  MountPoint_Wing_Left: {fileID: 1291868277}
+  MountPoint_Wing_Right: {fileID: 1899406182}
   MountPoint_Tail: {fileID: 1813383714}
+  Engine_Prefab: {fileID: 6229498324743090282, guid: 45fa54a40f638064fbee58ce5a9480cd, type: 3}
   Wing_Prefab: {fileID: 4046691811037903910, guid: 3ddc363360fda4044bacbda91005e4f4, type: 3}
-  Offset_Wing: {x: 0.25, y: 0, z: 0.5}
+  Offset_Engine: {x: 0.7, y: -0.1, z: 0.85}
+  Rotation_Engine: {x: 0, y: 0, z: 0, w: 1}
+  Offset_Wing: {x: 0.25, y: 0.1, z: 0.5}
+  Rotation_Wing: {x: 0, y: 0, z: 0, w: 1}
   Offset_Tail: {x: 0, y: 0, z: -0.25}
+  Rotation_Tail: {x: 0, y: 0, z: 0, w: 1}
+  ENGINE_Size: 1
   WING_Inner_Segment_Count: 2
   WING_Span: 2
   WING_Span_Power: 0.75
@@ -5037,7 +5113,7 @@ Transform:
   - {fileID: 567919209}
   - {fileID: 222216244}
   m_Father: {fileID: 638192595}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1899406184
 MonoBehaviour:

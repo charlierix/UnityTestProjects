@@ -12,8 +12,6 @@ namespace Assets.Scripts.Genetic.Models
         public Vector3 Offset { get; set; }        // this is for the right wing.  The left will be mirroed
         public Quaternion Rotation { get; set; }
 
-        //TODO: Use size to determine force
-
         public float Size = 1;
     }
 }

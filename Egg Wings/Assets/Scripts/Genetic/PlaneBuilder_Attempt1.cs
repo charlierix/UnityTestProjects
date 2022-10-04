@@ -7,17 +7,27 @@ using UnityEngine;
 
 public class PlaneBuilder_Attempt1 : MonoBehaviour
 {
-    public GameObject MountPoint_Left;
-    public GameObject MountPoint_Right;
+    public GameObject MountPoint_Engine_Left;
+    public GameObject MountPoint_Engine_Right;
+    public GameObject MountPoint_Wing_Left;
+    public GameObject MountPoint_Wing_Right;
     public GameObject MountPoint_Tail;
 
+    public GameObject Engine_Prefab;
     public GameObject Wing_Prefab;
+
+    public Vector3 Offset_Engine = new Vector3(0.7f, 0, 0.85f);
+    public Quaternion Rotation_Engine = Quaternion.identity;
 
     public Vector3 Offset_Wing = new Vector3(0.25f, 0, 0.5f);
     public Quaternion Rotation_Wing = Quaternion.identity;
 
     public Vector3 Offset_Tail = new Vector3(0, 0, -0.5f);
     public Quaternion Rotation_Tail = Quaternion.identity;
+
+    // -------------------- Engine --------------------
+
+    public float ENGINE_Size = 1f;
 
     // --------------------- Wing ---------------------
 
@@ -67,20 +77,34 @@ public class PlaneBuilder_Attempt1 : MonoBehaviour
 
         var mountpoints = new PlaneBuilder_MountPoints()
         {
+            Engine_0_Left = MountPoint_Engine_Left,
+            Engine_0_Right = MountPoint_Engine_Right,
             Tail = MountPoint_Tail,
-            Wing_0_Left = MountPoint_Left,
-            Wing_0_Right = MountPoint_Right,
+            Wing_0_Left = MountPoint_Wing_Left,
+            Wing_0_Right = MountPoint_Wing_Right,
         };
 
-        PlaneBuilder.BuildPlane(def, mountpoints, Wing_Prefab);
+        PlaneBuilder.BuildPlane(def, mountpoints, Engine_Prefab, Wing_Prefab);
     }
 
     private PlaneDefinition GetDefinition()
     {
         return new PlaneDefinition()
         {
+            Engine_0 = GetDefinition_Engine(),
             Wing_0 = GetDefinition_Wing(),
             Tail = GetDefinition_Tail(),
+        };
+    }
+
+    private EngineDefinition GetDefinition_Engine()
+    {
+        return new EngineDefinition()
+        {
+            Offset = Offset_Engine,
+            Rotation = Rotation_Engine,
+
+            Size = ENGINE_Size,
         };
     }
 
