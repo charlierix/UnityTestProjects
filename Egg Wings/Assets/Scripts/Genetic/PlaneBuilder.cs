@@ -16,9 +16,14 @@ namespace Assets.Scripts.Genetic
 
         public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, PlaneBuilder_MountPoints mountpoints, GameObject engine_prefab, GameObject wing_prefab)
         {
-            //TODO:
+            //TODO: throw out items that are too small
 
-            //TODO: validate positions, move things around
+            //TODO: validate positions
+            //  move engines out of the way
+            //  apply modifiers to each wing things are too close together
+            //      lift at -90 / 0 / 90
+            //      drag at -90 / 0 / 90
+            //      from/to
 
             return new PlaneBuilderResults_Plane()
             {
@@ -447,79 +452,4 @@ namespace Assets.Scripts.Genetic
             return (horz, vert);
         }
     }
-
-    #region class: PlaneBuilder_MountPoints
-
-    public class PlaneBuilder_MountPoints
-    {
-        public GameObject Engine_0_Left { get; set; }
-        public GameObject Engine_0_Right { get; set; }
-
-        public GameObject Engine_1_Left { get; set; }
-        public GameObject Engine_1_Right { get; set; }
-
-        public GameObject Engine_2_Left { get; set; }
-        public GameObject Engine_2_Right { get; set; }
-
-        public GameObject Wing_0_Left { get; set; }
-        public GameObject Wing_0_Right { get; set; }
-
-        public GameObject Wing_1_Left { get; set; }
-        public GameObject Wing_1_Right { get; set; }
-
-        public GameObject Wing_2_Left { get; set; }
-        public GameObject Wing_2_Right { get; set; }
-
-        public GameObject Tail { get; set; }
-    }
-
-    #endregion
-    #region class: PlaneBuilderResults_Plane
-
-    public class PlaneBuilderResults_Plane
-    {
-        public PlaneBuilderResults_Engine Engine_Left { get; set; }
-        public PlaneBuilderResults_Engine Engine_Right { get; set; }
-        public PlaneBuilderResults_Wing Wing_Left { get; set; }
-        public PlaneBuilderResults_Wing Wing_Right { get; set; }
-        public PlaneBuilderResults_Tail Tail { get; set; }
-    }
-
-    #endregion
-    #region class: PlaneBuilderResults_Engine
-
-    public class PlaneBuilderResults_Engine
-    {
-        public GameObject Unscaled { get; set; }
-
-        public GameObject Engine { get; set; }
-    }
-
-    #endregion
-    #region class: PlaneBuilderResults_Wing
-
-    public class PlaneBuilderResults_Wing
-    {
-        public GameObject[] Unscaled { get; set; }
-
-        public GameObject[] Wings_Horz { get; set; }
-        public GameObject[] Wings_Vert { get; set; }
-    }
-
-    #endregion
-    #region class: PlaneBuilderResults_Tail
-
-    public class PlaneBuilderResults_Tail
-    {
-        public GameObject[] Unscaled { get; set; }
-
-        public GameObject[] Wings_Boom_Horz { get; set; }
-        public GameObject[] Wings_Boom_Vert { get; set; }
-
-        // Either of these two could be null
-        public GameObject Wing_Tail_Horz { get; set; }
-        public GameObject Wing_Tail_Vert { get; set; }
-    }
-
-    #endregion
 }

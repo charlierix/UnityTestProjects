@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace Assets.Scripts.Genetic.Models
 {
-    public class EngineDefinition
+    public record EngineDefinition
     {
-        public Vector3 Offset { get; set; }        // this is for the right wing.  The left will be mirroed
-        public Quaternion Rotation { get; set; }
+        public Vector3 Offset { get; init; }        // this is for the right wing.  The left will be mirroed
+        public Quaternion Rotation { get; init; }
 
-        public float Size = 1;
+        public float Size { get; init; } = 1;
     }
 }
