@@ -16,7 +16,8 @@ namespace Assets.Scripts.Genetic
 
         public static PlaneBuilderResults_Plane BuildPlane(PlaneDefinition def, PlaneBuilder_MountPoints mountpoints, GameObject engine_prefab, GameObject wing_prefab)
         {
-            //TODO: throw out items that are too small
+            // Throw out items that are too small
+            def = RemoveSmallDefinitions.ExaminePlane(def);
 
             //TODO: validate positions
             //  move engines out of the way
@@ -45,6 +46,7 @@ namespace Assets.Scripts.Genetic
                 Wing_2_Left = BuildWing(def.Wing_2, mountpoints.Wing_2_Left, wing_prefab, false),
                 Wing_2_Right = BuildWing(def.Wing_2, mountpoints.Wing_2_Right, wing_prefab, true),
 
+                //TODO: IF Mathf.Abs(def.Tail.Offset.x) > MIN THEN two tails ELSE one tail with offset.x = 0
                 Tail = BuildTail(def.Tail, mountpoints.Tail, wing_prefab),
             };
         }
@@ -202,19 +204,6 @@ namespace Assets.Scripts.Genetic
 
         private static void Clear(GameObject mount_point, BoneRenderer boneRenderer = null, RigBuilder rigBuilder = null, TwistChainConstraint[] twist_constraints = null)
         {
-            // Clear uscaled (keep Rig)
-            foreach (Transform child_transform in mount_point.transform)
-            {
-                GameObject child = child_transform.gameObject;
-
-                if (child.name.StartsWith(UNSCALED))
-                    UnityEngine.Object.Destroy(child);
-            }
-
-            // Clear bone renderer's transforms
-            if (boneRenderer != null)
-                boneRenderer.transforms = new Transform[0];
-
             // Clear IK constraints
             if (twist_constraints != null)
             {
@@ -225,8 +214,21 @@ namespace Assets.Scripts.Genetic
                 }
             }
 
+            // Clear bone renderer's transforms
+            if (boneRenderer != null)
+                boneRenderer.transforms = new Transform[0];
+
             if (rigBuilder != null)
                 rigBuilder.Build();
+
+            // Clear uscaled (keep Rig)
+            foreach (Transform child_transform in mount_point.transform)
+            {
+                GameObject child = child_transform.gameObject;
+
+                if (child.name.StartsWith(UNSCALED))
+                    UnityEngine.Object.Destroy(child);
+            }
         }
 
         private static GameObject[] CreateUnscaled(GameObject mount_point, Vector3[] points_relative)

@@ -17,15 +17,16 @@ namespace Assets.Scripts.Genetic.Models
         public WingDefinition Wing_1 { get; init; }
         public WingDefinition Wing_2 { get; init; }
 
+        public WingModifier[] WingModifiers_0 { get; init; }
+        public WingModifier[] WingModifiers_1 { get; init; }
+        public WingModifier[] WingModifiers_2 { get; init; }
+
         public TailDefinition Tail { get; init; }
 
         // head canard
 
         // spine
         //  this would be a single hinge joint, or a small chain of segments
-
-        // extra wings (hand/foot)
-        //  if these are used, then the main wing will need to mount higher up to keep non interfering airflow
 
         //TODO: maybe some way to define mass
     }

@@ -9,7 +9,7 @@ namespace Assets.Scripts.Genetic.Models
 {
     public record TailDefinition
     {
-        public Vector3 Offset { get; init; }
+        public Vector3 Offset { get; init; }        //NOTE: if offset contains abs(X) > MIN, there will be two tails
         public Quaternion Rotation { get; init; }
 
         public TailDefinition_Boom Boom { get; init; }
