@@ -6,7 +6,7 @@ using UnityEngine;
 public class Engine : MonoBehaviour
 {
     public const float STANDARD_HEIGHT = 0.4f;      // these are what the scale of the engine should be when size is "one"
-    public const float STANDARD_RADIUS = 0.3f;
+    public const float STANDARD_DIAMETER = 0.3f;
 
     public float THRUST_AT_HALF = 36;
     public float THRUST_AT_DOUBLE = 144;

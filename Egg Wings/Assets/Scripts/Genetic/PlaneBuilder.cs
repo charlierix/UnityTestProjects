@@ -290,9 +290,9 @@ namespace Assets.Scripts.Genetic
             GameObject retVal = UnityEngine.Object.Instantiate(engine_prefab, unscaled.transform);
 
             retVal.transform.localScale = new Vector3(
-                Engine.STANDARD_RADIUS * size,
+                Engine.STANDARD_DIAMETER * size,
                 Engine.STANDARD_HEIGHT * size,
-                Engine.STANDARD_RADIUS * size);
+                Engine.STANDARD_DIAMETER * size);
 
             return retVal;
         }

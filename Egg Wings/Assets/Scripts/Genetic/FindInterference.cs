@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor.Experimental.GraphView;
@@ -18,7 +19,6 @@ namespace Assets.Scripts.Genetic
         /// </remarks>
         public static PlaneDefinition FindWingBlockage(PlaneDefinition def)
         {
-
 
 
 
